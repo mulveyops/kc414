@@ -2,15 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { type Track, type Product } from "@shared/schema";
 import { AudioPlayer } from "./ui/audio-player";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardFooter } from "./ui/card";
+import { Button } from "./ui/button";
 import { Link } from "wouter";
+import { ShoppingBag } from "lucide-react";
 
 interface TrackWithMerch {
   track: Track;
   relatedProducts: Product[];
 }
 
-export function MusicSection() {
+interface MusicSectionProps {
+  preview?: boolean;
+}
+
+export function MusicSection({ preview }: MusicSectionProps) {
   const { data: tracks, isLoading: tracksLoading } = useQuery<Track[]>({
     queryKey: ["/api/tracks"],
   });
@@ -42,6 +47,10 @@ export function MusicSection() {
     );
   }
 
+  const displayTracks = preview 
+    ? tracksWithMerch.data?.slice(0, 2) 
+    : tracksWithMerch.data;
+
   return (
     <section id="music" className="container mx-auto px-4 py-16">
       <motion.h2
@@ -53,7 +62,7 @@ export function MusicSection() {
         Latest Tracks
       </motion.h2>
       <div className="grid gap-8">
-        {tracksWithMerch.data?.map(({ track, relatedProducts }) => (
+        {displayTracks?.map(({ track, relatedProducts }) => (
           <motion.div
             key={track.id}
             initial={{ opacity: 0, y: 20 }}
@@ -62,41 +71,28 @@ export function MusicSection() {
             className="space-y-4"
           >
             <AudioPlayer src={track.audioUrl} title={track.title} />
-
             {relatedProducts.length > 0 && (
-              <div className="mt-4">
-                <h3 className="text-sm font-medium mb-2">Related Merchandise</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {relatedProducts.map((product) => (
-                    <Card key={product.id} className="overflow-hidden">
-                      <CardContent className="p-0">
-                        <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className="w-full h-32 object-cover"
-                        />
-                      </CardContent>
-                      <CardFooter className="p-4">
-                        <div className="flex justify-between items-center w-full">
-                          <div>
-                            <p className="font-medium">{product.name}</p>
-                            <p className="text-sm text-muted-foreground">${product.price}</p>
-                          </div>
-                          <Link href={`/checkout/${product.id}`}>
-                            <a className="bg-primary text-primary-foreground px-3 py-1 rounded text-sm hover:bg-primary/90 transition">
-                              Buy Now
-                            </a>
-                          </Link>
-                        </div>
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <ShoppingBag className="h-4 w-4" />
+                <Link href={`/merchandise?track=${track.id}`}>
+                  <a className="hover:text-primary transition-colors">
+                    Shop {track.title} Merchandise
+                  </a>
+                </Link>
               </div>
             )}
           </motion.div>
         ))}
       </div>
+      {preview && (
+        <div className="text-center mt-8">
+          <Link href="/music">
+            <Button variant="outline" size="lg">
+              View All Tracks
+            </Button>
+          </Link>
+        </div>
+      )}
     </section>
   );
 }

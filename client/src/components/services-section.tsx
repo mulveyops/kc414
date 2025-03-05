@@ -1,8 +1,14 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Music, Mic, HeadphonesIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import { Link } from "wouter";
 
-export function ServicesSection() {
+interface ServicesSectionProps {
+  preview?: boolean;
+}
+
+export function ServicesSection({ preview }: ServicesSectionProps) {
   const services = [
     {
       icon: <HeadphonesIcon className="h-6 w-6" />,
@@ -52,6 +58,15 @@ export function ServicesSection() {
           </motion.div>
         ))}
       </div>
+      {preview && (
+        <div className="text-center mt-8">
+          <Link href="/services">
+            <Button variant="outline" size="lg">
+              Book Now
+            </Button>
+          </Link>
+        </div>
+      )}
     </section>
   );
 }
