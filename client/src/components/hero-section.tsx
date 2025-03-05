@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 
 export function HeroSection() {
-  // Replace this with the actual Spotify artist ID
-  const spotifyArtistId = "YOUR_SPOTIFY_ARTIST_ID";
+  // KC414's Spotify artist ID
+  const spotifyArtistId = "5iYiElMUXxQj6Mn8RDPImk";
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">

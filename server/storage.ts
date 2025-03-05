@@ -80,13 +80,13 @@ export class MemStorage implements IStorage {
         title: "Summer Nights",
         audioUrl: "https://example.com/track1.mp3", 
         coverUrl: "https://images.unsplash.com/photo-1517697471339-4aa32003c11a",
-        spotifyTrackId: "YOUR_SPOTIFY_TRACK_ID_1" 
+        spotifyTrackId: "35y6CibZz03nYN50l9hYs7"
       },
       {
         title: "City Lights",
         audioUrl: "https://example.com/track2.mp3", 
         coverUrl: "https://images.unsplash.com/photo-1650783756081-f235c2c76b6a",
-        spotifyTrackId: "YOUR_SPOTIFY_TRACK_ID_2" 
+        spotifyTrackId: "0GBAlKy6JPxLSJCkpCzvJA"
       }
     ];
 

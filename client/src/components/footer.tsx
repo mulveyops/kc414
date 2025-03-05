@@ -34,7 +34,7 @@ export function Footer() {
               <FaYoutube className="h-5 w-5" />
             </a>
             <a
-              href={`https://open.spotify.com/artist/YOUR_SPOTIFY_ARTIST_ID`}
+              href={`https://open.spotify.com/artist/5iYiElMUXxQj6Mn8RDPImk`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-primary transition"
