@@ -53,14 +53,14 @@ export function HeroSection() {
             </a>
           </div>
           <iframe
-            src={`https://open.spotify.com/follow/1/?uri=spotify:artist:${spotifyArtistId}&size=detail&theme=dark`}
-            width="200"
-            height="56"
+            style={{ borderRadius: '12px' }}
+            src={`https://open.spotify.com/follow/1/?uri=spotify:artist:${spotifyArtistId}&size=basic&theme=dark`}
+            width="100"
+            height="25"
             scrolling="no"
             frameBorder="0"
-            style={{ border: 'none', overflow: 'hidden' }}
-            allowTransparency={true}
-          />
+            allow="encrypted-media"
+          ></iframe>
         </motion.div>
       </div>
     </section>
