@@ -2,6 +2,14 @@ import { pgTable, text, serial, integer, boolean, jsonb, numeric } from "drizzle
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+export const tracks = pgTable("tracks", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  audioUrl: text("audio_url").notNull(),
+  coverUrl: text("cover_url").notNull(),
+  spotifyTrackId: text("spotify_track_id"), // Added Spotify track ID
+});
+
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -10,14 +18,7 @@ export const products = pgTable("products", {
   imageUrl: text("image_url").notNull(),
   category: text("category").notNull(),
   inStock: boolean("in_stock").default(true),
-  relatedTrackId: integer("related_track_id"), // Added reference to related track
-});
-
-export const tracks = pgTable("tracks", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  audioUrl: text("audio_url").notNull(),
-  coverUrl: text("cover_url").notNull(),
+  relatedTrackId: integer("related_track_id"),
 });
 
 export const bookings = pgTable("bookings", {

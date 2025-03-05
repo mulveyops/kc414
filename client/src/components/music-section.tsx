@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { type Track, type Product } from "@shared/schema";
-import { AudioPlayer } from "./ui/audio-player";
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Link } from "wouter";
@@ -70,7 +69,21 @@ export function MusicSection({ preview }: MusicSectionProps) {
             viewport={{ once: true }}
             className="space-y-4"
           >
-            <AudioPlayer src={track.audioUrl} title={track.title} />
+            {track.spotifyTrackId ? (
+              <iframe
+                src={`https://open.spotify.com/embed/track/${track.spotifyTrackId}`}
+                width="100%"
+                height="152"
+                frameBorder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+                className="rounded-lg"
+              />
+            ) : (
+              <div className="bg-card p-4 rounded-lg text-muted-foreground">
+                Track not available on Spotify
+              </div>
+            )}
             {relatedProducts.length > 0 && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <ShoppingBag className="h-4 w-4" />

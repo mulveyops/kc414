@@ -1,4 +1,4 @@
-import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaInstagram, FaTwitter, FaYoutube, FaSpotify } from "react-icons/fa";
 
 export function Footer() {
   return (
@@ -32,6 +32,14 @@ export function Footer() {
               className="text-muted-foreground hover:text-primary transition"
             >
               <FaYoutube className="h-5 w-5" />
+            </a>
+            <a
+              href={`https://open.spotify.com/artist/YOUR_SPOTIFY_ARTIST_ID`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition"
+            >
+              <FaSpotify className="h-5 w-5" />
             </a>
           </div>
         </div>

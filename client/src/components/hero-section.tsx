@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
 
 export function HeroSection() {
+  // Replace this with the actual Spotify artist ID
+  const spotifyArtistId = "YOUR_SPOTIFY_ARTIST_ID";
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div
@@ -33,20 +36,31 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex gap-4 justify-center"
+          className="flex flex-col items-center gap-6"
         >
-          <a
-            href="#music"
-            className="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition"
-          >
-            Listen Now
-          </a>
-          <a
-            href="#merch"
-            className="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg hover:bg-secondary/90 transition"
-          >
-            Shop Merch
-          </a>
+          <div className="flex gap-4">
+            <a
+              href="#music"
+              className="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition"
+            >
+              Listen Now
+            </a>
+            <a
+              href="#merch"
+              className="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg hover:bg-secondary/90 transition"
+            >
+              Shop Merch
+            </a>
+          </div>
+          <iframe
+            src={`https://open.spotify.com/follow/1/?uri=spotify:artist:${spotifyArtistId}&size=detail&theme=dark`}
+            width="200"
+            height="56"
+            scrolling="no"
+            frameBorder="0"
+            style={{ border: 'none', overflow: 'hidden' }}
+            allowTransparency={true}
+          />
         </motion.div>
       </div>
     </section>

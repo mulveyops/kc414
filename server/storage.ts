@@ -78,13 +78,15 @@ export class MemStorage implements IStorage {
     const mockTracks: InsertTrack[] = [
       {
         title: "Summer Nights",
-        audioUrl: "https://example.com/track1.mp3", // This needs to be changed to real track URL
-        coverUrl: "https://images.unsplash.com/photo-1517697471339-4aa32003c11a" // This needs to be changed to real cover art
+        audioUrl: "https://example.com/track1.mp3", 
+        coverUrl: "https://images.unsplash.com/photo-1517697471339-4aa32003c11a",
+        spotifyTrackId: "YOUR_SPOTIFY_TRACK_ID_1" 
       },
       {
         title: "City Lights",
-        audioUrl: "https://example.com/track2.mp3", // This needs to be changed to real track URL
-        coverUrl: "https://images.unsplash.com/photo-1650783756081-f235c2c76b6a" // This needs to be changed to real cover art
+        audioUrl: "https://example.com/track2.mp3", 
+        coverUrl: "https://images.unsplash.com/photo-1650783756081-f235c2c76b6a",
+        spotifyTrackId: "YOUR_SPOTIFY_TRACK_ID_2" 
       }
     ];
 
@@ -103,7 +105,7 @@ export class MemStorage implements IStorage {
         imageUrl: "https://images.unsplash.com/photo-1523381294911-8d3cead13475",
         category: "clothing",
         inStock: true,
-        relatedTrackId: 1 // Related to "Summer Nights" track
+        relatedTrackId: 1 
       },
       {
         name: "City Lights Hoodie",
@@ -112,7 +114,7 @@ export class MemStorage implements IStorage {
         imageUrl: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
         category: "clothing",
         inStock: true,
-        relatedTrackId: 2 // Related to "City Lights" track
+        relatedTrackId: 2 
       }
     ];
 
