@@ -3,11 +3,14 @@ import { type Product } from "@shared/schema";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardFooter } from "./ui/card";
 import { Link } from "wouter";
+import { Button } from "./ui/button";
 
 export function MerchSection() {
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
+
+  const displayProducts = products?.slice(0, 3);
 
   if (isLoading) {
     return (
@@ -32,10 +35,10 @@ export function MerchSection() {
         viewport={{ once: true }}
         className="text-3xl font-bold mb-8"
       >
-        Merchandise
+        Featured Merchandise
       </motion.h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products?.map((product) => (
+        {displayProducts?.map((product) => (
           <motion.div
             key={product.id}
             initial={{ opacity: 0, y: 20 }}
@@ -65,6 +68,15 @@ export function MerchSection() {
             </Card>
           </motion.div>
         ))}
+      </div>
+      <div className="text-center mt-8">
+        <Link href="/merchandise">
+          <a>
+            <Button variant="outline" size="lg">
+              View All Merchandise
+            </Button>
+          </a>
+        </Link>
       </div>
     </section>
   );
