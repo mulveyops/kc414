@@ -13,6 +13,8 @@ export interface IStorage {
   getProducts(): Promise<Product[]>;
   getProduct(id: number): Promise<Product | undefined>;
   getTracks(): Promise<Track[]>;
+  getTrack(id: number): Promise<Track | undefined>;
+  getRelatedProducts(trackId: number): Promise<Product[]>;
   createBooking(booking: InsertBooking): Promise<Booking>;
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
 }
@@ -47,6 +49,16 @@ export class MemStorage implements IStorage {
     return Array.from(this.tracks.values());
   }
 
+  async getTrack(id: number): Promise<Track | undefined> {
+    return this.tracks.get(id);
+  }
+
+  async getRelatedProducts(trackId: number): Promise<Product[]> {
+    return Array.from(this.products.values()).filter(
+      (product) => product.relatedTrackId === trackId
+    );
+  }
+
   async createBooking(booking: InsertBooking): Promise<Booking> {
     const id = this.currentId.bookings++;
     const newBooking = { ...booking, id };
@@ -62,48 +74,51 @@ export class MemStorage implements IStorage {
   }
 
   private initializeMockData() {
-    // Mock Products
-    const mockProducts: InsertProduct[] = [
-      {
-        name: "Classic Logo Tee",
-        description: "100% cotton t-shirt with embroidered logo",
-        price: "29.99",
-        imageUrl: "https://images.unsplash.com/photo-1523381294911-8d3cead13475",
-        category: "clothing",
-        inStock: true
-      },
-      {
-        name: "Urban Hoodie",
-        description: "Premium cotton blend hoodie",
-        price: "59.99",
-        imageUrl: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
-        category: "clothing",
-        inStock: true
-      }
-    ];
-
     // Mock Tracks
     const mockTracks: InsertTrack[] = [
       {
         title: "Summer Nights",
-        audioUrl: "https://example.com/track1.mp3",
-        coverUrl: "https://images.unsplash.com/photo-1517697471339-4aa32003c11a"
+        audioUrl: "https://example.com/track1.mp3", // This needs to be changed to real track URL
+        coverUrl: "https://images.unsplash.com/photo-1517697471339-4aa32003c11a" // This needs to be changed to real cover art
       },
       {
         title: "City Lights",
-        audioUrl: "https://example.com/track2.mp3",
-        coverUrl: "https://images.unsplash.com/photo-1650783756081-f235c2c76b6a"
+        audioUrl: "https://example.com/track2.mp3", // This needs to be changed to real track URL
+        coverUrl: "https://images.unsplash.com/photo-1650783756081-f235c2c76b6a" // This needs to be changed to real cover art
+      }
+    ];
+
+    // Create tracks first
+    mockTracks.forEach((track) => {
+      const id = this.currentId.tracks++;
+      this.tracks.set(id, { ...track, id });
+    });
+
+    // Mock Products with track relationships
+    const mockProducts: (InsertProduct & { relatedTrackId?: number })[] = [
+      {
+        name: "Summer Nights Tee",
+        description: "T-shirt featuring the Summer Nights album artwork",
+        price: "29.99",
+        imageUrl: "https://images.unsplash.com/photo-1523381294911-8d3cead13475",
+        category: "clothing",
+        inStock: true,
+        relatedTrackId: 1 // Related to "Summer Nights" track
+      },
+      {
+        name: "City Lights Hoodie",
+        description: "Premium hoodie with City Lights album art",
+        price: "59.99",
+        imageUrl: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
+        category: "clothing",
+        inStock: true,
+        relatedTrackId: 2 // Related to "City Lights" track
       }
     ];
 
     mockProducts.forEach((product) => {
       const id = this.currentId.products++;
       this.products.set(id, { ...product, id });
-    });
-
-    mockTracks.forEach((track) => {
-      const id = this.currentId.tracks++;
-      this.tracks.set(id, { ...track, id });
     });
   }
 }

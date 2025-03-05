@@ -4,7 +4,7 @@ import { Button } from "./button";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 
 interface AudioPlayerProps {
-  src: string;
+  src: string;  // This is where the audio URL is passed in
   title: string;
 }
 
@@ -51,7 +51,7 @@ export function AudioPlayer({ src, title }: AudioPlayerProps) {
     <div className="flex items-center gap-4 w-full max-w-md bg-card p-4 rounded-lg">
       <audio
         ref={audioRef}
-        src={src}
+        src={src}  // The audio source URL is used here
         onTimeUpdate={handleTimeUpdate}
         onEnded={() => setIsPlaying(false)}
       />

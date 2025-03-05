@@ -10,6 +10,7 @@ export const products = pgTable("products", {
   imageUrl: text("image_url").notNull(),
   category: text("category").notNull(),
   inStock: boolean("in_stock").default(true),
+  relatedTrackId: integer("related_track_id"), // Added reference to related track
 });
 
 export const tracks = pgTable("tracks", {

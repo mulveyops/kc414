@@ -24,6 +24,19 @@ export async function registerRoutes(app: Express) {
     res.json(tracks);
   });
 
+  app.get("/api/tracks/:id", async (req, res) => {
+    const track = await storage.getTrack(Number(req.params.id));
+    if (!track) {
+      return res.status(404).json({ message: "Track not found" });
+    }
+    res.json(track);
+  });
+
+  app.get("/api/tracks/:id/products", async (req, res) => {
+    const products = await storage.getRelatedProducts(Number(req.params.id));
+    res.json(products);
+  });
+
   app.post("/api/bookings", async (req, res) => {
     const result = insertBookingSchema.safeParse(req.body);
     if (!result.success) {
