@@ -38,7 +38,7 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="flex flex-col items-center gap-6"
         >
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-wrap justify-center">
             <a
               href="#music"
               className="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition"
@@ -50,6 +50,12 @@ export function HeroSection() {
               className="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg hover:bg-secondary/90 transition"
             >
               Shop Merch
+            </a>
+            <a
+              href="#services"
+              className="bg-accent text-accent-foreground px-6 py-3 rounded-lg hover:bg-accent/90 transition"
+            >
+              Services
             </a>
           </div>
           <iframe
