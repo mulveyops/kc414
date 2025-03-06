@@ -55,7 +55,7 @@ export class MemStorage implements IStorage {
 
   async getRelatedProducts(trackId: number): Promise<Product[]> {
     return Array.from(this.products.values()).filter(
-      (product) => product.relatedTrackId === trackId
+      (product) => product.relatedTrackId === trackId,
     );
   }
 
@@ -66,7 +66,9 @@ export class MemStorage implements IStorage {
     return newBooking;
   }
 
-  async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
+  async createContactMessage(
+    message: InsertContactMessage,
+  ): Promise<ContactMessage> {
     const id = this.currentId.messages++;
     const newMessage = { ...message, id };
     this.contactMessages.set(id, newMessage);
@@ -78,16 +80,18 @@ export class MemStorage implements IStorage {
     const mockTracks: InsertTrack[] = [
       {
         title: "F-150",
-        audioUrl: "https://example.com/track1.mp3", 
-        coverUrl: "https://images.unsplash.com/photo-1517697471339-4aa32003c11a",
-        spotifyTrackId: "35y6CibZz03nYN50l9hYs7"
+        audioUrl: "https://example.com/track1.mp3",
+        coverUrl:
+          "https://images.unsplash.com/photo-1517697471339-4aa32003c11a",
+        spotifyTrackId: "35y6CibZz03nYN50l9hYs7",
       },
       {
         title: "Good Vibes No Drama",
-        audioUrl: "https://example.com/track2.mp3", 
-        coverUrl: "https://images.unsplash.com/photo-1650783756081-f235c2c76b6a",
-        spotifyTrackId: "0GBAlKy6JPxLSJCkpCzvJA"
-      }
+        audioUrl: "https://example.com/track2.mp3",
+        coverUrl:
+          "https://images.unsplash.com/photo-1650783756081-f235c2c76b6a",
+        spotifyTrackId: "0GBAlKy6JPxLSJCkpCzvJA",
+      },
     ];
 
     // Create tracks first
@@ -102,20 +106,22 @@ export class MemStorage implements IStorage {
         name: "F-150 Tee",
         description: "T-shirt featuring F-150 artwork",
         price: "10",
-        imageUrl: "https://images.unsplash.com/photo-1523381294911-8d3cead13475",
+        imageUrl:
+          "https://images.unsplash.com/photo-1523381294911-8d3cead13475",
         category: "clothing",
         inStock: true,
-        relatedTrackId: 1 
+        relatedTrackId: 1,
       },
       {
         name: "Good Vibes No Drama Hoodie",
         description: "Premium hoodie with Good Vibes No Drama art",
         price: "59.99",
-        imageUrl: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
+        imageUrl:
+          "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
         category: "clothing",
         inStock: true,
-        relatedTrackId: 2 
-      }
+        relatedTrackId: 2,
+      },
     ];
 
     mockProducts.forEach((product) => {
