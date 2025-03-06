@@ -11,7 +11,7 @@ export function HeroSection() {
         style={{
           backgroundImage: "url('/IMG_2586.jpeg')",
           backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundPosition: "center 30%", /* Move image down by positioning it 30% from the top */
           filter: "brightness(0.3)",
         }}
       />
