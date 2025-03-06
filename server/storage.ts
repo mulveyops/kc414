@@ -77,13 +77,13 @@ export class MemStorage implements IStorage {
     // Mock Tracks
     const mockTracks: InsertTrack[] = [
       {
-        title: "Summer Nights",
+        title: "F-150",
         audioUrl: "https://example.com/track1.mp3", 
         coverUrl: "https://images.unsplash.com/photo-1517697471339-4aa32003c11a",
         spotifyTrackId: "35y6CibZz03nYN50l9hYs7"
       },
       {
-        title: "City Lights",
+        title: "Good Vibes No Drama",
         audioUrl: "https://example.com/track2.mp3", 
         coverUrl: "https://images.unsplash.com/photo-1650783756081-f235c2c76b6a",
         spotifyTrackId: "0GBAlKy6JPxLSJCkpCzvJA"
@@ -99,17 +99,17 @@ export class MemStorage implements IStorage {
     // Mock Products with track relationships
     const mockProducts: (InsertProduct & { relatedTrackId?: number })[] = [
       {
-        name: "Summer Nights Tee",
-        description: "T-shirt featuring the Summer Nights album artwork",
-        price: "29.99",
+        name: "F-150 Tee",
+        description: "T-shirt featuring F-150 artwork",
+        price: "10",
         imageUrl: "https://images.unsplash.com/photo-1523381294911-8d3cead13475",
         category: "clothing",
         inStock: true,
         relatedTrackId: 1 
       },
       {
-        name: "City Lights Hoodie",
-        description: "Premium hoodie with City Lights album art",
+        name: "Good Vibes No Drama Hoodie",
+        description: "Premium hoodie with Good Vibes No Drama art",
         price: "59.99",
         imageUrl: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
         category: "clothing",
