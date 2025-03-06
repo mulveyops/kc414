@@ -9,10 +9,11 @@ export function HeroSection() {
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: "url(https://images.unsplash.com/photo-1517697471339-4aa32003c11a)",
+          backgroundImage:
+            "url(https://images.unsplash.com/photo-1517697471339-4aa32003c11a)",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          filter: "brightness(0.3)"
+          filter: "brightness(0.3)",
         }}
       />
       <div className="relative z-10 container mx-auto px-4 text-center">
@@ -30,7 +31,7 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-xl md:text-2xl text-gray-300 mb-8"
         >
-          Musician • DJ • Fashion Designer
+          Musician • DJ/MC • Designer
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -53,10 +54,12 @@ export function HeroSection() {
             </a>
           </div>
           <iframe
-            style={{ borderRadius: '12px' }}
-            src={`https://open.spotify.com/follow/1/?uri=spotify:artist:${spotifyArtistId}&size=basic&theme=dark`}
-            width="100"
-            height="25"
+            style={{ borderRadius: "12px" }}
+            src={
+              "https://open.spotify.com/embed/artist/5iYiElMUXxQj6Mn8RDPImk?utm_source=generator"
+            }
+            width="100%"
+            height="352"
             scrolling="no"
             frameBorder="0"
             allow="encrypted-media"
