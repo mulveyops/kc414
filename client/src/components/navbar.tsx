@@ -22,7 +22,7 @@ export function Navbar() {
               <Link key={item.href} href={item.href}>
                 <a
                   className={`text-sm transition-colors hover:text-primary ${
-                    location === item.href ? "text-primary" : "text-muted-foreground"
+                    location === item.href ? "text-white" : "text-muted-foreground"
                   }`}
                 >
                   {item.label}
