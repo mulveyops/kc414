@@ -64,7 +64,7 @@ export function HeroSection() {
               "https://open.spotify.com/embed/artist/5iYiElMUXxQj6Mn8RDPImk?utm_source=generator"
             }
             width="100%"
-            height="352"
+            height="460"
             scrolling="no"
             frameBorder="0"
             allow="encrypted-media"
