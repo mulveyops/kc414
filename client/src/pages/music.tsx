@@ -1,11 +1,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { type Track, type Product } from "@shared/schema";
-import { AudioPlayer } from "@/components/ui/audio-player";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { ShoppingBag } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface TrackWithMerch {
   track: Track;
@@ -61,13 +61,13 @@ export default function Music() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="max-w-3xl mx-auto mb-16"
+            className="max-w-4xl mx-auto mb-16"
           >
             <iframe
               style={{ borderRadius: "12px" }}
               src="https://open.spotify.com/embed/artist/5iYiElMUXxQj6Mn8RDPImk?utm_source=generator"
               width="100%"
-              height="352"
+              height="450"
               scrolling="no"
               frameBorder="0"
               allow="autoplay; encrypted-media"
@@ -76,25 +76,18 @@ export default function Music() {
           </motion.div>
         </motion.div>
         
-        <div className="grid gap-12 max-w-4xl mx-auto">
+        <div className="grid gap-12 max-w-5xl mx-auto">
           {tracksWithMerch.data?.map(({ track, relatedProducts }) => (
             <motion.div
               key={track.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-card p-6 rounded-xl shadow-lg"
+              className="bg-card rounded-xl shadow-lg overflow-hidden"
             >
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="md:w-1/3">
-                  <img 
-                    src={track.coverUrl} 
-                    alt={track.title}
-                    className="w-full aspect-square object-cover rounded-lg"
-                  />
-                </div>
-                <div className="md:w-2/3 space-y-4">
-                  <h2 className="text-3xl font-bold">{track.title}</h2>
+              <div className="grid md:grid-cols-2 gap-0">
+                <div className="p-6">
+                  <h2 className="text-3xl font-bold mb-4">{track.title}</h2>
                   
                   {track.spotifyTrackId ? (
                     <iframe
@@ -104,25 +97,27 @@ export default function Music() {
                       frameBorder="0"
                       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                       loading="lazy"
-                      className="rounded-lg"
+                      className="rounded-lg mb-4"
                     />
                   ) : (
-                    <AudioPlayer src={track.audioUrl} title={track.title} />
-                  )}
-                  
-                  {relatedProducts.length > 0 && (
-                    <div className="mt-4 pt-4 border-t">
-                      <div className="flex items-center gap-2 text-sm">
-                        <ShoppingBag className="h-5 w-5" />
-                        <Link href={`/merchandise?track=${track.id}`}>
-                          <a className="text-primary hover:underline font-medium">
-                            Shop {track.title} Merchandise
-                          </a>
-                        </Link>
-                      </div>
-                    </div>
+                    <div className="mb-4">Track not available on Spotify</div>
                   )}
                 </div>
+                
+                {relatedProducts.length > 0 && (
+                  <div className="bg-accent/10 p-6 flex flex-col justify-center">
+                    <h3 className="text-2xl font-semibold mb-3">Merchandise</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Get official merchandise for "{track.title}"
+                    </p>
+                    <Link href={`/merchandise?track=${track.id}`}>
+                      <Button className="gap-2 text-base" size="lg">
+                        <ShoppingBag className="h-5 w-5" />
+                        Shop {track.title} Merchandise
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}
