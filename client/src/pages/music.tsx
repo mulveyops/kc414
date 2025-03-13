@@ -53,9 +53,27 @@ export default function Music() {
           className="text-center mb-12"
         >
           <h1 className="text-5xl font-bold mb-4">KC414 Music</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             Listen to my latest tracks and explore related merchandise
           </p>
+          
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="max-w-3xl mx-auto mb-16"
+          >
+            <iframe
+              style={{ borderRadius: "12px" }}
+              src="https://open.spotify.com/embed/artist/5iYiElMUXxQj6Mn8RDPImk?utm_source=generator"
+              width="100%"
+              height="352"
+              scrolling="no"
+              frameBorder="0"
+              allow="autoplay; encrypted-media"
+              className="shadow-xl"
+            ></iframe>
+          </motion.div>
         </motion.div>
         
         <div className="grid gap-12 max-w-4xl mx-auto">

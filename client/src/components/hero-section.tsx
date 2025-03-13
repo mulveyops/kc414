@@ -58,17 +58,6 @@ export function HeroSection() {
               Services
             </a>
           </div>
-          <iframe
-            style={{ borderRadius: "12px" }}
-            src={
-              "https://open.spotify.com/embed/artist/5iYiElMUXxQj6Mn8RDPImk?utm_source=generator"
-            }
-            width="100%"
-            height="460"
-            scrolling="no"
-            frameBorder="0"
-            allow="encrypted-media"
-          ></iframe>
         </motion.div>
       </div>
     </section>
