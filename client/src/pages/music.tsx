@@ -110,12 +110,16 @@ export default function Music() {
                     <p className="text-muted-foreground mb-4">
                       Get official merchandise for "{track.title}"
                     </p>
-                    <Link href={`/merchandise?track=${track.id}`}>
-                      <Button className="gap-2 text-base" size="lg">
-                        <ShoppingBag className="h-5 w-5" />
-                        Shop {track.title} Merchandise
-                      </Button>
-                    </Link>
+                    {relatedProducts.map((product, index) => (
+                      <div key={product.id} className={index > 0 ? "mt-3" : ""}>
+                        <Link href={`/product/${product.id}`}>
+                          <Button className="gap-2 text-base w-full justify-start" size="lg">
+                            <ShoppingBag className="h-5 w-5" />
+                            {product.name} - ${product.price}
+                          </Button>
+                        </Link>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
