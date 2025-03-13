@@ -1,9 +1,11 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { type Track, type Product } from "@shared/schema";
 import { AudioPlayer } from "@/components/ui/audio-player";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Link } from "wouter";
+import { ShoppingBag } from "lucide-react";
 
 interface TrackWithMerch {
   track: Track;
@@ -45,55 +47,65 @@ export default function Music() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-16">
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl font-bold mb-8"
+          className="text-center mb-12"
         >
-          KC414 Music
-        </motion.h1>
-        <div className="grid gap-8">
+          <h1 className="text-5xl font-bold mb-4">KC414 Music</h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Listen to my latest tracks and explore related merchandise
+          </p>
+        </motion.div>
+        
+        <div className="grid gap-12 max-w-4xl mx-auto">
           {tracksWithMerch.data?.map(({ track, relatedProducts }) => (
             <motion.div
               key={track.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="space-y-4"
+              className="bg-card p-6 rounded-xl shadow-lg"
             >
-              <AudioPlayer src={track.audioUrl} title={track.title} />
-
-              {relatedProducts.length > 0 && (
-                <div className="mt-4">
-                  <h3 className="text-sm font-medium mb-2">Related Merchandise</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {relatedProducts.map((product) => (
-                      <Card key={product.id} className="overflow-hidden">
-                        <CardContent className="p-0">
-                          <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            className="w-full h-32 object-cover"
-                          />
-                        </CardContent>
-                        <CardFooter className="p-4">
-                          <div className="flex justify-between items-center w-full">
-                            <div>
-                              <p className="font-medium">{product.name}</p>
-                              <p className="text-sm text-muted-foreground">${product.price}</p>
-                            </div>
-                            <Link href={`/checkout/${product.id}`}>
-                              <a className="bg-primary text-primary-foreground px-3 py-1 rounded text-sm hover:bg-primary/90 transition">
-                                Buy Now
-                              </a>
-                            </Link>
-                          </div>
-                        </CardFooter>
-                      </Card>
-                    ))}
-                  </div>
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="md:w-1/3">
+                  <img 
+                    src={track.coverUrl} 
+                    alt={track.title}
+                    className="w-full aspect-square object-cover rounded-lg"
+                  />
                 </div>
-              )}
+                <div className="md:w-2/3 space-y-4">
+                  <h2 className="text-3xl font-bold">{track.title}</h2>
+                  
+                  {track.spotifyTrackId ? (
+                    <iframe
+                      src={`https://open.spotify.com/embed/track/${track.spotifyTrackId}`}
+                      width="100%"
+                      height="152"
+                      frameBorder="0"
+                      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                      loading="lazy"
+                      className="rounded-lg"
+                    />
+                  ) : (
+                    <AudioPlayer src={track.audioUrl} title={track.title} />
+                  )}
+                  
+                  {relatedProducts.length > 0 && (
+                    <div className="mt-4 pt-4 border-t">
+                      <div className="flex items-center gap-2 text-sm">
+                        <ShoppingBag className="h-5 w-5" />
+                        <Link href={`/merchandise?track=${track.id}`}>
+                          <a className="text-primary hover:underline font-medium">
+                            Shop {track.title} Merchandise
+                          </a>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
