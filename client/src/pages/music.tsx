@@ -111,12 +111,27 @@ export default function Music() {
                       Get official merchandise for "{track.title}"
                     </p>
                     {relatedProducts.map((product, index) => (
-                      <div key={product.id} className={index > 0 ? "mt-3" : ""}>
+                      <div key={product.id} className={index > 0 ? "mt-5" : ""}>
                         <Link href={`/product/${product.id}`}>
-                          <Button className="gap-2 text-base w-full justify-start" size="lg">
-                            <ShoppingBag className="h-5 w-5" />
-                            {product.name} - ${product.price}
-                          </Button>
+                          <div className="bg-card rounded-lg overflow-hidden hover:opacity-90 transition-opacity">
+                            <div className="w-full h-48 overflow-hidden">
+                              <img 
+                                src={product.imageUrl} 
+                                alt={product.name} 
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="p-4 flex items-center justify-between">
+                              <div>
+                                <h4 className="font-medium">{product.name}</h4>
+                                <p className="text-muted-foreground">${product.price}</p>
+                              </div>
+                              <Button variant="secondary" size="sm" className="gap-1">
+                                <ShoppingBag className="h-4 w-4" />
+                                Shop
+                              </Button>
+                            </div>
+                          </div>
                         </Link>
                       </div>
                     ))}
