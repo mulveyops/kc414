@@ -65,9 +65,9 @@ export default function Cart() {
           ))}
           <div className="flex justify-between items-center mt-6">
             <div className="text-xl font-semibold">Total: ${total.toFixed(2)}</div>
-            <Link href="/checkout">
-              <Button size="lg">Proceed to Checkout</Button>
-            </Link>
+            <Button size="lg" onClick={() => window.location.href = '/checkout'}>
+              Proceed to Checkout
+            </Button>
           </div>
         </div>
       )}

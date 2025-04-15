@@ -21,7 +21,7 @@ function Router() {
       <Route path="/services" component={Services} />
       <Route path="/product/:id" component={Product} />
       <Route path="/cart" component={Cart} />
-      <Route path="/checkout/:id" component={Checkout} />
+      <Route path="/checkout" component={Checkout} />
       <Route component={NotFound} />
     </Switch>
   );

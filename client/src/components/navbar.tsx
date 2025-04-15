@@ -33,7 +33,6 @@ export function Navbar() {
             ))}
           </div>
           <Link href="/cart" className="relative">
-            <ShoppingCart className="h-5 w-5" />
             {(() => {
               const [count, setCount] = useState(0);
 
@@ -45,13 +44,22 @@ export function Navbar() {
 
                 updateCartCount();
                 window.addEventListener('cartUpdated', updateCartCount);
-                return () => window.removeEventListener('cartUpdated', updateCartCount);
+                window.addEventListener('storage', updateCartCount);
+                return () => {
+                  window.removeEventListener('cartUpdated', updateCartCount);
+                  window.removeEventListener('storage', updateCartCount);
+                };
               }, []);
 
-              return count > 0 && (
-                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                  {count}
-                </span>
+              return (
+                <>
+                  <ShoppingCart className="h-5 w-5" />
+                  {count > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                      {count}
+                    </span>
+                  )}
+                </>
               );
             })()}
           </Link>
