@@ -21,7 +21,7 @@ export default function Cart() {
     setCartItems(newItems);
   };
 
-  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+  const total = cartItems.reduce((sum, item) => (sum || 0) + (item.price || 0), 0);
 
   return (
     <div className="container mx-auto px-4 py-16">
