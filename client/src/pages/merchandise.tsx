@@ -7,9 +7,11 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ShoppingBag } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Merchandise() {
   const [activeTrack, setActiveTrack] = useState<number | null>(null);
+  const { toast } = useToast();
   
   const { data: products, isLoading: productsLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
