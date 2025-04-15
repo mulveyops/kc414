@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function Merchandise() {
   const [activeTrack, setActiveTrack] = useState<number | null>(null);
+  const [selectedSizes, setSelectedSizes] = useState<Record<number, string>>({});
   const { toast } = useToast();
   
   const { data: products, isLoading: productsLoading } = useQuery<Product[]>({
@@ -123,12 +124,13 @@ export default function Merchandise() {
                       {["S", "M", "L", "XL"].map((size) => (
                         <Button
                           key={size}
-                          variant={product.selectedSize === size ? "default" : "outline"}
+                          variant={selectedSizes[product.id] === size ? "default" : "outline"}
                           size="sm"
                           onClick={() => {
-                            product.selectedSize = size;
-                            // Force a re-render
-                            setActiveTrack(activeTrack);
+                            setSelectedSizes(prev => ({
+                              ...prev,
+                              [product.id]: size
+                            }));
                           }}
                         >
                           {size}
@@ -137,20 +139,22 @@ export default function Merchandise() {
                     </div>
                     <Button 
                       className="gap-2"
-                      disabled={!product.selectedSize}
+                      disabled={!selectedSizes[product.id]}
                       onClick={() => {
                         const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                        cart.push({...product});
+                        cart.push({...product, selectedSize: selectedSizes[product.id]});
                         localStorage.setItem('cart', JSON.stringify(cart));
                         window.dispatchEvent(new Event('cartUpdated'));
                         toast({
                           title: "Added to Cart",
-                          description: `${product.name} (${product.selectedSize}) has been added to your cart`,
+                          description: `${product.name} (${selectedSizes[product.id]}) has been added to your cart`,
                         });
                         // Reset size selection
-                        delete product.selectedSize;
-                        // Force a re-render
-                        setActiveTrack(activeTrack);
+                        setSelectedSizes(prev => {
+                          const next = {...prev};
+                          delete next[product.id];
+                          return next;
+                        });
                       }}
                     >
                       <ShoppingBag className="h-4 w-4" />
