@@ -110,13 +110,27 @@ export default function Merchandise() {
                   <p className="text-muted-foreground mb-2">{product.description}</p>
                   <p className="text-lg font-bold">${product.price}</p>
                 </CardContent>
-                <CardFooter>
-                  <Link href={`/product/${product.id}`}>
-                    <Button className="w-full gap-2">
-                      <ShoppingBag className="h-4 w-4" />
-                      View Product
+                <CardFooter className="flex gap-2">
+                  <Link href={`/product/${product.id}`} className="flex-1">
+                    <Button variant="outline" className="w-full">
+                      View Details
                     </Button>
                   </Link>
+                  <Button 
+                    className="gap-2"
+                    onClick={() => {
+                      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                      cart.push(product);
+                      localStorage.setItem('cart', JSON.stringify(cart));
+                      toast({
+                        title: "Added to Cart",
+                        description: `${product.name} has been added to your cart`,
+                      });
+                    }}
+                  >
+                    <ShoppingBag className="h-4 w-4" />
+                    Add to Cart
+                  </Button>
                 </CardFooter>
               </Card>
             </motion.div>
