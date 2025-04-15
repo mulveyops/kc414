@@ -1,4 +1,6 @@
 import { Link, useLocation } from "wouter";
+import { ShoppingCart } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function Navbar() {
   const [location] = useLocation();
@@ -30,6 +32,31 @@ export function Navbar() {
               </Link>
             ))}
           </div>
+          <Link href="/cart" className="relative">
+            <ShoppingCart className="h-5 w-5" />
+            {(() => {
+              const [count, setCount] = useState(0);
+
+              useEffect(() => {
+                const items = JSON.parse(localStorage.getItem('cart') || '[]');
+                setCount(items.length);
+
+                const handleStorage = () => {
+                  const items = JSON.parse(localStorage.getItem('cart') || '[]');
+                  setCount(items.length);
+                };
+
+                window.addEventListener('storage', handleStorage);
+                return () => window.removeEventListener('storage', handleStorage);
+              }, []);
+
+              return count > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  {count}
+                </span>
+              );
+            })()}
+          </Link>
         </div>
       </div>
     </nav>
