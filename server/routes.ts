@@ -88,5 +88,48 @@ export async function registerRoutes(app: Express) {
     res.status(201).json(message);
   });
 
+  app.post("/api/orders", async (req, res) => {
+    const { name, email, phone, address, notes } = req.body;
+    
+    // Email configuration
+    const nodemailer = await import('nodemailer');
+    const transporter = nodemailer.default.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+
+    const cartItems = req.body.cartItems || [];
+    const total = cartItems.reduce((sum: number, item: any) => sum + Number(item.price), 0);
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.RECIPIENT_EMAIL,
+      subject: 'New Merchandise Order',
+      text: `
+        New order received:
+        
+        Customer Information:
+        Name: ${name}
+        Email: ${email}
+        Phone: ${phone}
+        Shipping Address: ${address}
+        Additional Notes: ${notes}
+
+        Total Order Value: $${total.toFixed(2)}
+      `
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      res.status(201).json({ message: "Order received" });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      res.status(500).json({ message: "Failed to process order" });
+    }
+  });
+
   return httpServer;
 }

@@ -1,199 +1,180 @@
-
 import { useState, useEffect } from "react";
 import { type Product } from "@shared/schema";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+
+const orderFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(1, "Phone number is required"),
+  address: z.string().min(1, "Shipping address is required"),
+  notes: z.string().optional(),
+});
 
 export default function Checkout() {
-  const [cartItems, setCartItems] = useState<Product[]>([]);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    address: "",
-    city: "",
-    zipCode: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: ""
-  });
   const { toast } = useToast();
+  const [cartItems, setCartItems] = useState<Product[]>([]);
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem('cart') || '[]');
     setCartItems(items);
   }, []);
 
-  const total = cartItems.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+  const total = cartItems.reduce((sum: number, item: any) => sum + Number(item.price), 0);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  const form = useForm({
+    resolver: zodResolver(orderFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      notes: "",
+    },
+  });
 
-  const handleCheckout = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // In a real application, you would process payment here
-    localStorage.setItem('cart', '[]');
-    window.dispatchEvent(new Event('cartUpdated'));
-    
-    toast({
-      title: "Order Placed Successfully",
-      description: "Thank you for your purchase! You will receive a confirmation email shortly.",
-    });
-    
-    window.location.href = '/';
-  };
-
-  if (cartItems.length === 0) {
-    return (
-      <div className="container mx-auto px-4 py-16">
-        <h1 className="text-2xl font-bold">Your cart is empty</h1>
-      </div>
-    );
-  }
+  const mutation = useMutation({
+    mutationFn: async (data: unknown) => {
+      await apiRequest("POST", "/api/orders", data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Order submitted",
+        description: "We'll contact you soon to confirm your order.",
+      });
+      form.reset();
+      localStorage.setItem('cart', '[]');
+    },
+  });
 
   return (
     <div className="container mx-auto px-4 py-16">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-2xl mx-auto"
+        className="max-w-md mx-auto"
       >
         <Card>
           <CardHeader>
-            <CardTitle>Checkout</CardTitle>
+            <CardTitle>Complete Your Order</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleCheckout} className="space-y-6">
-              <div className="space-y-4">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="flex items-center gap-4">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.name}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{item.name}</h3>
-                      <p className="text-sm text-muted-foreground">${item.price}</p>
-                    </div>
+            <div className="mb-6">
+              <h3 className="font-semibold mb-2">Order Summary</h3>
+              <div className="space-y-2">
+                {cartItems.map((item: any, index: number) => (
+                  <div key={index} className="flex justify-between">
+                    <span>{item.name}</span>
+                    <span>${item.price}</span>
                   </div>
                 ))}
-              </div>
-
-              <div className="space-y-4 pt-6 border-t">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="address">Shipping Address</Label>
-                  <Input
-                    id="address"
-                    name="address"
-                    required
-                    value={formData.address}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
-                    <Input
-                      id="city"
-                      name="city"
-                      required
-                      value={formData.city}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="zipCode">ZIP Code</Label>
-                    <Input
-                      id="zipCode"
-                      name="zipCode"
-                      required
-                      value={formData.zipCode}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="cardNumber">Card Number</Label>
-                  <Input
-                    id="cardNumber"
-                    name="cardNumber"
-                    required
-                    placeholder="**** **** **** ****"
-                    value={formData.cardNumber}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="expiryDate">Expiry Date</Label>
-                    <Input
-                      id="expiryDate"
-                      name="expiryDate"
-                      placeholder="MM/YY"
-                      required
-                      value={formData.expiryDate}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="cvv">CVV</Label>
-                    <Input
-                      id="cvv"
-                      name="cvv"
-                      type="password"
-                      maxLength={4}
-                      required
-                      value={formData.cvv}
-                      onChange={handleInputChange}
-                    />
+                <div className="border-t pt-2 font-semibold">
+                  <div className="flex justify-between">
+                    <span>Total</span>
+                    <span>${total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="pt-4 border-t">
-                <div className="flex justify-between text-lg font-semibold mb-4">
-                  <span>Total:</span>
-                  <span>${total.toFixed(2)}</span>
-                </div>
-                <Button type="submit" className="w-full">
-                  Complete Purchase
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone</FormLabel>
+                      <FormControl>
+                        <Input type="tel" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Shipping Address</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Additional Notes</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={mutation.isPending}
+                >
+                  {mutation.isPending ? "Submitting..." : "Submit Order"}
                 </Button>
-              </div>
-            </form>
+              </form>
+            </Form>
           </CardContent>
         </Card>
       </motion.div>
