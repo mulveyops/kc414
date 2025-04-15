@@ -42,8 +42,41 @@ export async function registerRoutes(app: Express) {
     if (!result.success) {
       return res.status(400).json({ message: "Invalid booking data" });
     }
+    
     const booking = await storage.createBooking(result.data);
-    res.status(201).json(booking);
+    
+    // Email configuration
+    const nodemailer = require('nodemailer');
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.RECIPIENT_EMAIL,
+      subject: 'New Booking Request',
+      text: `
+        New booking request received:
+        
+        Name: ${result.data.name}
+        Email: ${result.data.email}
+        Date: ${result.data.date}
+        Service Type: ${result.data.type}
+        Message: ${result.data.message}
+      `
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      res.status(201).json(booking);
+    } catch (error) {
+      console.error('Error sending email:', error);
+      res.status(500).json({ message: "Booking saved but email notification failed" });
+    }
   });
 
   app.post("/api/contact", async (req, res) => {
