@@ -15,13 +15,15 @@ export default function Product() {
     queryKey: [`/api/products/${params?.id}`],
   });
 
+  const [selectedSize, setSelectedSize] = useState("M");
+
   const addToCart = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    cart.push(product);
+    cart.push({...product, selectedSize});
     localStorage.setItem('cart', JSON.stringify(cart));
     toast({
       title: "Added to Cart",
-      description: `${product?.name} has been added to your cart`,
+      description: `${product?.name} (${selectedSize}) has been added to your cart`,
     });
   };
 
@@ -62,6 +64,17 @@ export default function Product() {
           <h1 className="text-4xl font-bold">{product.name}</h1>
           <p className="text-xl text-muted-foreground">{product.description}</p>
           <p className="text-3xl font-bold">${product.price}</p>
+          <div className="flex gap-2 my-4">
+            {["S", "M", "L", "XL"].map((size) => (
+              <Button
+                key={size}
+                variant={selectedSize === size ? "default" : "outline"}
+                onClick={() => setSelectedSize(size)}
+              >
+                {size}
+              </Button>
+            ))}
+          </div>
           <Button size="lg" onClick={addToCart} className="w-full gap-2">
             <ShoppingCart className="h-5 w-5" />
             Add to Cart

@@ -125,6 +125,10 @@ export async function registerRoutes(app: Express) {
     const cartItems = req.body.cartItems || [];
     const total = cartItems.reduce((sum: number, item: any) => sum + Number(item.price), 0);
 
+    const cartItemsDetails = cartItems.map(item => 
+      `- ${item.name} (Size: ${item.selectedSize}) - $${item.price}`
+    ).join('\n');
+
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.RECIPIENT_EMAIL,
@@ -139,6 +143,9 @@ export async function registerRoutes(app: Express) {
         Shipping Address: ${address}
         Additional Notes: ${notes}
 
+        Order Details:
+        ${cartItemsDetails}
+        
         Total Order Value: $${total.toFixed(2)}
       `
     };
