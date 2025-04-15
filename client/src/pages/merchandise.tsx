@@ -118,22 +118,45 @@ export default function Merchandise() {
                       View Details
                     </Button>
                   </Link>
-                  <Button 
-                    className="gap-2"
-                    onClick={() => {
-                      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                      cart.push(product);
-                      localStorage.setItem('cart', JSON.stringify(cart));
-                      window.dispatchEvent(new Event('cartUpdated'));
-                      toast({
-                        title: "Added to Cart",
-                        description: `${product.name} has been added to your cart`,
-                      });
-                    }}
-                  >
-                    <ShoppingBag className="h-4 w-4" />
-                    Add to Cart
-                  </Button>
+                  <div className="flex gap-2 flex-col">
+                    <div className="flex gap-2">
+                      {["S", "M", "L", "XL"].map((size) => (
+                        <Button
+                          key={size}
+                          variant={product.selectedSize === size ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => {
+                            product.selectedSize = size;
+                            // Force a re-render
+                            setActiveTrack(activeTrack);
+                          }}
+                        >
+                          {size}
+                        </Button>
+                      ))}
+                    </div>
+                    <Button 
+                      className="gap-2"
+                      disabled={!product.selectedSize}
+                      onClick={() => {
+                        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                        cart.push({...product});
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        window.dispatchEvent(new Event('cartUpdated'));
+                        toast({
+                          title: "Added to Cart",
+                          description: `${product.name} (${product.selectedSize}) has been added to your cart`,
+                        });
+                        // Reset size selection
+                        delete product.selectedSize;
+                        // Force a re-render
+                        setActiveTrack(activeTrack);
+                      }}
+                    >
+                      <ShoppingBag className="h-4 w-4" />
+                      Add to Cart
+                    </Button>
+                  </div>
                 </CardFooter>
               </Card>
             </motion.div>
