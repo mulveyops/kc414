@@ -9,6 +9,7 @@ import Merchandise from "@/pages/merchandise";
 import Services from "@/pages/services";
 import Checkout from "@/pages/checkout";
 import Product from "@/pages/product";
+import Cart from "@/pages/cart";
 import NotFound from "@/pages/not-found";
 
 function Router() {
