@@ -62,6 +62,7 @@ export default function Services() {
         description: "We'll get back to you soon to confirm your booking.",
       });
       form.reset();
+      window.location.href = '/';
     },
   });
 

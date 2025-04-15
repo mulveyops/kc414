@@ -66,6 +66,7 @@ export default function Checkout() {
       });
       form.reset();
       localStorage.setItem('cart', '[]');
+      window.location.href = '/';
     },
   });
 

@@ -72,6 +72,27 @@ export async function registerRoutes(app: Express) {
 
     try {
       await transporter.sendMail(mailOptions);
+      
+      // Send confirmation to customer
+      const customerMailOptions = {
+        from: process.env.EMAIL_USER,
+        to: result.data.email,
+        subject: 'Booking Confirmation - KC414',
+        text: `
+          Thank you for booking with KC414!
+          
+          We have received your booking request for:
+          Date: ${result.data.date}
+          Service Type: ${result.data.type}
+          
+          We will review your request and get back to you soon.
+          
+          Best regards,
+          KC414 Team
+        `
+      };
+      await transporter.sendMail(customerMailOptions);
+      
       res.status(201).json(booking);
     } catch (error) {
       console.error('Error sending email:', error);
@@ -124,6 +145,26 @@ export async function registerRoutes(app: Express) {
 
     try {
       await transporter.sendMail(mailOptions);
+      
+      // Send confirmation to customer
+      const customerMailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Order Confirmation - KC414 Merchandise',
+        text: `
+          Thank you for your order with KC414!
+          
+          Order Details:
+          Total Amount: $${total.toFixed(2)}
+          
+          We will process your order and send you shipping information soon.
+          
+          Best regards,
+          KC414 Team
+        `
+      };
+      await transporter.sendMail(customerMailOptions);
+      
       res.status(201).json({ message: "Order received" });
     } catch (error) {
       console.error('Error sending email:', error);
