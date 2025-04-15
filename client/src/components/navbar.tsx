@@ -38,16 +38,14 @@ export function Navbar() {
               const [count, setCount] = useState(0);
 
               useEffect(() => {
-                const items = JSON.parse(localStorage.getItem('cart') || '[]');
-                setCount(items.length);
-
-                const handleStorage = () => {
+                const updateCartCount = () => {
                   const items = JSON.parse(localStorage.getItem('cart') || '[]');
                   setCount(items.length);
                 };
 
-                window.addEventListener('storage', handleStorage);
-                return () => window.removeEventListener('storage', handleStorage);
+                updateCartCount();
+                window.addEventListener('cartUpdated', updateCartCount);
+                return () => window.removeEventListener('cartUpdated', updateCartCount);
               }, []);
 
               return count > 0 && (

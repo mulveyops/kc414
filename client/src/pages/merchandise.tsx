@@ -124,6 +124,7 @@ export default function Merchandise() {
                       const cart = JSON.parse(localStorage.getItem('cart') || '[]');
                       cart.push(product);
                       localStorage.setItem('cart', JSON.stringify(cart));
+                      window.dispatchEvent(new Event('cartUpdated'));
                       toast({
                         title: "Added to Cart",
                         description: `${product.name} has been added to your cart`,
