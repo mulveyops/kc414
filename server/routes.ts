@@ -46,7 +46,7 @@ export async function registerRoutes(app: Express) {
     const booking = await storage.createBooking(result.data);
     
     // Email configuration
-    const nodemailer = require('nodemailer');
+    import nodemailer from 'nodemailer';
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
