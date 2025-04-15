@@ -8,6 +8,7 @@ import Music from "@/pages/music";
 import Merchandise from "@/pages/merchandise";
 import Services from "@/pages/services";
 import Checkout from "@/pages/checkout";
+import Product from "@/pages/product";
 import NotFound from "@/pages/not-found";
 
 function Router() {
