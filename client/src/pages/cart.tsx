@@ -1,3 +1,4 @@
+// client/src/pages/cart.tsx
 
 import { useState, useEffect } from "react";
 import { type Product } from "@shared/schema";
@@ -11,17 +12,20 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState<Product[]>([]);
 
   useEffect(() => {
-    const items = JSON.parse(localStorage.getItem('cart') || '[]');
+    const items = JSON.parse(localStorage.getItem("cart") || "[]");
     setCartItems(items);
   }, []);
 
   const removeFromCart = (productId: number) => {
-    const newItems = cartItems.filter(item => item.id !== productId);
-    localStorage.setItem('cart', JSON.stringify(newItems));
+    const newItems = cartItems.filter((item) => item.id !== productId);
+    localStorage.setItem("cart", JSON.stringify(newItems));
     setCartItems(newItems);
   };
 
-  const total = cartItems.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+  const total = cartItems.reduce(
+    (sum, item) => sum + (Number(item.price) || 0),
+    0,
+  );
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -51,6 +55,10 @@ export default function Cart() {
                   <div className="ml-4 flex-1">
                     <h3 className="font-semibold">{item.name}</h3>
                     <p className="text-muted-foreground">${item.price}</p>
+                    {/* Displaying the size here */}
+                    <p className="text-muted-foreground">
+                      Size: {item.selectedSize}
+                    </p>
                   </div>
                   <Button
                     variant="ghost"
@@ -64,8 +72,13 @@ export default function Cart() {
             </motion.div>
           ))}
           <div className="flex justify-between items-center mt-6">
-            <div className="text-xl font-semibold">Total: ${total.toFixed(2)}</div>
-            <Button size="lg" onClick={() => window.location.href = '/checkout'}>
+            <div className="text-xl font-semibold">
+              Total: ${total.toFixed(2)}
+            </div>
+            <Button
+              size="lg"
+              onClick={() => (window.location.href = "/checkout")}
+            >
               Proceed to Checkout
             </Button>
           </div>

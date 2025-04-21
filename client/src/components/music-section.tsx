@@ -71,13 +71,15 @@ export function MusicSection({ preview }: MusicSectionProps) {
           >
             {track.spotifyTrackId ? (
               <iframe
-                src={`https://open.spotify.com/embed/track/${track.spotifyTrackId}`}
+                src={`https://open.spotify.com/embed/track/${track.spotifyTrackId}?utm_source=generator`}
                 width="100%"
-                height="152"
+                height="352"
                 frameBorder="0"
+                allowFullScreen
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                 loading="lazy"
                 className="rounded-lg"
+                style={{ borderRadius: "12px" }}
               />
             ) : (
               <div className="bg-card p-4 rounded-lg text-muted-foreground">

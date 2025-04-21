@@ -90,14 +90,19 @@ export class MemStorage implements IStorage {
         audioUrl: "https://example.com/track2.mp3",
         coverUrl:
           "https://images.unsplash.com/photo-1650783756081-f235c2c76b6a",
-        spotifyTrackId: "4QakCHurMo3pOhJgXB9Mro?",
+        spotifyTrackId: "0GBAlKy6JPxLSJCkpCzvJA",
       },
     ];
 
     // Create tracks first
     mockTracks.forEach((track) => {
       const id = this.currentId.tracks++;
-      this.tracks.set(id, { ...track, id });
+      const sanitizedTrack = {
+        ...track,
+        id,
+        spotifyTrackId: track.spotifyTrackId || null
+      };
+      this.tracks.set(id, sanitizedTrack);
     });
 
     // Mock Products with track relationships
@@ -106,6 +111,7 @@ export class MemStorage implements IStorage {
         name: "F-150 Tee",
         description: "T-shirt featuring F-150 artwork",
         price: "10",
+        size: "M",
         imageUrl:
           "https://images.unsplash.com/photo-1523381294911-8d3cead13475",
         category: "clothing",
@@ -116,6 +122,7 @@ export class MemStorage implements IStorage {
         name: "Good Vibes No Drama Hoodie",
         description: "Premium hoodie with Good Vibes No Drama art",
         price: "59.99",
+        size: "L",
         imageUrl:
           "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
         category: "clothing",
@@ -126,7 +133,13 @@ export class MemStorage implements IStorage {
 
     mockProducts.forEach((product) => {
       const id = this.currentId.products++;
-      this.products.set(id, { ...product, id });
+      const sanitizedProduct = {
+        ...product,
+        id,
+        inStock: product.inStock ?? true,
+        relatedTrackId: product.relatedTrackId ?? null
+      };
+      this.products.set(id, sanitizedProduct);
     });
   }
 }

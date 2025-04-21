@@ -1,6 +1,22 @@
-import { pgTable, text, serial, integer, boolean, jsonb, numeric } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  serial,
+  integer,
+  boolean,
+  jsonb,
+  numeric,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
+export const orderFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+  address: z.string().min(1, "Address is required"),
+  notes: z.string().optional(),
+});
 
 export const tracks = pgTable("tracks", {
   id: serial("id").primaryKey(),
@@ -38,10 +54,16 @@ export const contactMessages = pgTable("contact_messages", {
   message: text("message").notNull(),
 });
 
-export const insertProductSchema = createInsertSchema(products).omit({ id: true });
+export const insertProductSchema = createInsertSchema(products).omit({
+  id: true,
+});
 export const insertTrackSchema = createInsertSchema(tracks).omit({ id: true });
-export const insertBookingSchema = createInsertSchema(bookings).omit({ id: true });
-export const insertContactSchema = createInsertSchema(contactMessages).omit({ id: true });
+export const insertBookingSchema = createInsertSchema(bookings).omit({
+  id: true,
+});
+export const insertContactSchema = createInsertSchema(contactMessages).omit({
+  id: true,
+});
 
 export type Product = typeof products.$inferSelect;
 export type Track = typeof tracks.$inferSelect;
