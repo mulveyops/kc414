@@ -42,23 +42,52 @@ const FormField = <
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext)
   const itemContext = React.useContext(FormItemContext)
-  const { getFieldState, formState } = useFormContext()
-
-  const fieldState = getFieldState(fieldContext.name, formState)
-
-  if (!fieldContext) {
-    throw new Error("useFormField should be used within <FormField>")
-  }
-
-  const { id } = itemContext
-
-  return {
-    id,
-    name: fieldContext.name,
-    formItemId: `${id}-form-item`,
-    formDescriptionId: `${id}-form-item-description`,
-    formMessageId: `${id}-form-item-message`,
-    ...fieldState,
+  
+  // Using try-catch to handle potential errors
+  try {
+    const formContext = useFormContext()
+    
+    if (!fieldContext) {
+      throw new Error("useFormField should be used within <FormField>")
+    }
+    
+    if (!itemContext) {
+      throw new Error("useFormField should be used within <FormItem>")
+    }
+    
+    const { id } = itemContext
+    const { formState } = formContext
+    
+    // Safely access form state properties with null checks
+    const fieldState = {
+      invalid: formState && formState.errors ? !!formState.errors[fieldContext.name] : false,
+      isDirty: formState && formState.dirtyFields ? !!formState.dirtyFields[fieldContext.name] : false,
+      isTouched: formState && formState.touchedFields ? !!formState.touchedFields[fieldContext.name] : false,
+      error: formState && formState.errors ? formState.errors[fieldContext.name] : undefined,
+    }
+    
+    return {
+      id,
+      name: fieldContext.name,
+      formItemId: `${id}-form-item`,
+      formDescriptionId: `${id}-form-item-description`,
+      formMessageId: `${id}-form-item-message`,
+      ...fieldState,
+    }
+  } catch (error) {
+    // Return default values if there's an error
+    console.error("Error in useFormField:", error)
+    return {
+      id: "",
+      name: "",
+      formItemId: "",
+      formDescriptionId: "",
+      formMessageId: "",
+      invalid: false,
+      isDirty: false,
+      isTouched: false,
+      error: undefined
+    }
   }
 }
 

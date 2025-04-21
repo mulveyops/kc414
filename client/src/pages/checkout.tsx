@@ -30,8 +30,13 @@ export default function Checkout() {
   const [cartItems, setCartItems] = useState<Product[]>([]);
 
   useEffect(() => {
-    const items = JSON.parse(localStorage.getItem("cart") || "[]");
-    setCartItems(items);
+    try {
+      const items = JSON.parse(localStorage.getItem("cart") || "[]");
+      setCartItems(items);
+    } catch (error) {
+      console.error("Error loading cart data:", error);
+      setCartItems([]);
+    }
   }, []);
 
   const total = cartItems.reduce(
@@ -51,8 +56,14 @@ export default function Checkout() {
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: unknown) => {
-      await apiRequest("POST", "/api/orders", data);
+    mutationFn: async (values: z.infer<typeof orderFormSchema>) => {
+      // Combine form data with cart items
+      const orderData = {
+        ...values,
+        items: cartItems,
+        total: total
+      };
+      await apiRequest("POST", "/api/orders", orderData);
     },
     onSuccess: () => {
       toast({
@@ -61,8 +72,19 @@ export default function Checkout() {
       });
       form.reset();
       localStorage.setItem("cart", "[]");
-      window.location.href = "/";
+      setCartItems([]);
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500); // Give the toast time to be visible
     },
+    onError: (error) => {
+      console.error("Order submission error:", error);
+      toast({
+        title: "Error",
+        description: "There was a problem submitting your order. Please try again.",
+        variant: "destructive",
+      });
+    }
   });
 
   return (
@@ -97,41 +119,86 @@ export default function Checkout() {
               </div>
             </div>
 
-            <Form onSubmit={form.handleSubmit(mutation.mutate)}>
-              {/* Form fields for name, email, phone, address, notes */}
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Shipping Address</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Additional Notes</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={mutation.isPending}
-              >
-                {mutation.isPending ? "Submitting..." : "Submit Order"}
-              </Button>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="your@email.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your phone number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Shipping Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Your full shipping address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Additional Notes (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Any special instructions" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <Button
+                  type="submit"
+                  className="w-full mt-4"
+                  disabled={mutation.isPending}
+                >
+                  {mutation.isPending ? "Submitting..." : "Submit Order"}
+                </Button>
+              </form>
             </Form>
           </CardContent>
         </Card>
