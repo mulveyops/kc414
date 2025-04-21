@@ -61,9 +61,9 @@ export default function Checkout() {
       const orderData = {
         ...values,
         items: cartItems,
-        total: total
+        total: total.toFixed(2)
       };
-      await apiRequest("POST", "/api/orders", orderData);
+      return await apiRequest("POST", "/api/orders", orderData);
     },
     onSuccess: () => {
       toast({
