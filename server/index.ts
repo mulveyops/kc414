@@ -10,14 +10,19 @@ app.use(express.urlencoded({ extended: false }));
 
 // Add CORS headers
 app.use((req, res, next) => {
+  // Accept requests from any origin
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+  
+  // Log all incoming requests to help debugging
+  console.log(`Incoming request: ${req.method} ${req.url}`);
   
   next();
 });
@@ -75,13 +80,30 @@ app.use((req, res, next) => {
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client
   const port = 5000;
-  console.log('port', port)
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-    cors: true
-  }, () => {
-    log(`serving on port ${port} from host 0.0.0.0`);
-  });
+  console.log('Starting server on port', port);
+  
+  // Attempt to listen on all available interfaces with detailed error handling
+  try {
+    server.listen({
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    }, () => {
+      console.log(`✅ Server running at http://0.0.0.0:${port}`);
+      log(`serving on port ${port} from host 0.0.0.0`);
+    });
+    
+    // Add error handling for the server
+    server.on('error', (error: any) => {
+      if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${port} is already in use. Try using a different port.`);
+      } else {
+        console.error(`❌ Server error: ${error.message}`);
+      }
+      process.exit(1);
+    });
+  } catch (error) {
+    console.error(`❌ Failed to start server: ${error}`);
+    process.exit(1);
+  }
 })();
