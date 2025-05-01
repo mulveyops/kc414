@@ -1,6 +1,8 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import dotenv from "dotenv";
+dotenv.config();
 
 console.log("🔥 server/index.ts is running...");
 
@@ -79,7 +81,7 @@ app.use((req, res, next) => {
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client
-  const port = 5000;
+  const port = 3000;
   console.log('Starting server on port', port);
   
   // Attempt to listen on all available interfaces with detailed error handling
@@ -87,7 +89,7 @@ app.use((req, res, next) => {
     server.listen({
       port,
       host: "0.0.0.0",
-      reusePort: true,
+      //reusePort: true,
     }, () => {
       console.log(`✅ Server running at http://0.0.0.0:${port}`);
       log(`serving on port ${port} from host 0.0.0.0`);
