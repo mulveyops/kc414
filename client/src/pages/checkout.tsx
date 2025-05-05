@@ -22,8 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { orderFormSchema } from "@shared/schema";
-
+const { orderFormSchema } = require("@shared/schema");
 
 export default function Checkout() {
   const { toast } = useToast();
