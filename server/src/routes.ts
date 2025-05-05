@@ -3,10 +3,24 @@ import { createServer } from "http";
 import { storage } from "./storage";
 import { insertBookingSchema, insertContactSchema, Product } from "@shared/schema";
 import type { TransportOptions } from "nodemailer";
+import cors from 'cors'; // Add CORS support
+import express from 'express';
 
+// Initialize Express app with middleware
 export async function registerRoutes(app: Express) {
+  // Enable CORS to allow frontend (e.g., kc414-frontend.onrender.com) to access backend
+  app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Adjust based on your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type'],
+  }));
+
+  // Parse JSON bodies for POST/PUT requests
+  app.use(express.json());
+
   const httpServer = createServer(app);
 
+  // Products API
   app.get("/api/products", async (_req, res) => {
     const products = await storage.getProducts();
     res.json(products);
@@ -20,6 +34,7 @@ export async function registerRoutes(app: Express) {
     res.json(product);
   });
 
+  // Tracks API
   app.get("/api/tracks", async (_req, res) => {
     const tracks = await storage.getTracks();
     res.json(tracks);
@@ -38,6 +53,7 @@ export async function registerRoutes(app: Express) {
     res.json(products);
   });
 
+  // Bookings API
   app.post("/api/bookings", async (req, res) => {
     const result = insertBookingSchema.safeParse(req.body);
     if (!result.success) {
@@ -54,11 +70,11 @@ export async function registerRoutes(app: Express) {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD
       }
-    });
+    } as TransportOptions); // Type assertion for Nodemailer
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: process.env.RECIPIENT_EMAIL,
+      to: process.env.RECIPIENT_EMAIL || 'default@example.com', // Fallback to avoid crash
       subject: 'New Booking Request',
       text: `
         New booking request received:
@@ -74,7 +90,6 @@ export async function registerRoutes(app: Express) {
     try {
       await transporter.sendMail(mailOptions);
       
-      // Send confirmation to customer
       const customerMailOptions = {
         from: process.env.EMAIL_USER,
         to: result.data.email,
@@ -101,6 +116,7 @@ export async function registerRoutes(app: Express) {
     }
   });
 
+  // Contact API
   app.post("/api/contact", async (req, res) => {
     const result = insertContactSchema.safeParse(req.body);
     if (!result.success) {
@@ -110,6 +126,7 @@ export async function registerRoutes(app: Express) {
     res.status(201).json(message);
   });
 
+  // Orders API
   app.post("/api/orders", async (req, res) => {
     try {
       const { name, email, phone, address, notes, items, total } = req.body;
@@ -122,7 +139,6 @@ export async function registerRoutes(app: Express) {
         notes: notes || 'None'
       };
       
-      // Validate required fields
       if (!name || !email || !address) {
         return res.status(400).json({ 
           message: "Missing required fields",
@@ -130,7 +146,6 @@ export async function registerRoutes(app: Express) {
         });
       }
       
-      // Ensure we have items in the order
       const orderItems = items || [];
       if (!orderItems.length) {
         return res.status(400).json({ 
@@ -139,15 +154,12 @@ export async function registerRoutes(app: Express) {
         });
       }
       
-      // Calculate total on server side as well (for verification)
       const calculatedTotal = orderItems.reduce((sum: number, item: any) => sum + Number(item.price), 0);
       
-      // Format cart items for email
       const cartItemsDetails = orderItems.map((item: any) => 
         `- ${item.name} (Size: ${item.selectedSize || 'N/A'}) - $${Number(item.price).toFixed(2)}`
       ).join('\n');
       
-      // Email configuration - when available
       if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
         const nodemailer = await import('nodemailer');
         const transporter = nodemailer.default.createTransport({
@@ -156,11 +168,11 @@ export async function registerRoutes(app: Express) {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASSWORD
           }
-        });
+        } as TransportOptions);
 
         const mailOptions = {
           from: process.env.EMAIL_USER,
-          to: process.env.RECIPIENT_EMAIL || email, // Fallback to customer email if recipient not set
+          to: process.env.RECIPIENT_EMAIL || email,
           subject: 'New Merchandise Order',
           text: `
             New order received:
@@ -182,7 +194,6 @@ export async function registerRoutes(app: Express) {
         try {
           await transporter.sendMail(mailOptions);
           
-          // Send confirmation to customer
           const customerMailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -204,13 +215,11 @@ export async function registerRoutes(app: Express) {
           await transporter.sendMail(customerMailOptions);
         } catch (emailError) {
           console.error('Error sending email:', emailError);
-          // Continue processing order even if email fails
         }
       } else {
         console.log('Email credentials not configured - skipping email notifications');
       }
       
-      // Store order in memory (would be in database in production)
       const timestamp = new Date().toISOString();
       const orderSummary = {
         id: `order-${Date.now()}`,
@@ -220,9 +229,9 @@ export async function registerRoutes(app: Express) {
         date: timestamp
       };
       
+      // Store order (in memory for now; replace with database in production)
       console.log('Order received:', orderSummary);
       
-      // Return success response
       res.status(201).json({ 
         message: "Order received successfully",
         orderId: orderSummary.id,

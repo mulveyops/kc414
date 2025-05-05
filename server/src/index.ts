@@ -1,6 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import { serveStatic, log } from "./vite"; // Removed setupVite (dev only)
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -12,8 +12,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // Add CORS headers
 app.use((req, res, next) => {
-  // Accept requests from any origin
-  res.header('Access-Control-Allow-Origin', '*');
+  // Accept requests from the frontend (e.g., kc414-frontend.onrender.com)
+  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:5173');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
@@ -67,29 +67,21 @@ app.use((req, res, next) => {
     const message = err.message || "Internal Server Error";
 
     res.status(status).json({ message });
-    throw err;
+    console.error(`Error: ${message}`); // Log error for Render logs
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
+  // Serve static assets in production (optional, if frontend assets are in server/public)
+  serveStatic(app); // Keep this if you want to serve static files from server/public
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client
-  const port = 3000;
+  // Use Render's assigned port
+  const port = process.env.PORT || 3000; // Fallback to 3000 for local development
   console.log('Starting server on port', port);
   
   // Attempt to listen on all available interfaces with detailed error handling
   try {
     server.listen({
-      port,
+      port: Number(port),
       host: "0.0.0.0",
-      //reusePort: true,
     }, () => {
       console.log(`✅ Server running at http://0.0.0.0:${port}`);
       log(`serving on port ${port} from host 0.0.0.0`);
