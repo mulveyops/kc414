@@ -4,7 +4,6 @@
       "module": "ESNext",
       "moduleResolution": "node",
       "outDir": "dist",
-      "rootDir": "../",
       "strict": true,
       "esModuleInterop": true,
       "skipLibCheck": true,
@@ -14,6 +13,6 @@
         "@shared/*": ["../shared/*"]
       }
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "../shared/**/*"], // Include shared folder
     "exclude": ["node_modules"]
   }
