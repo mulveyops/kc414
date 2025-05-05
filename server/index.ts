@@ -1,6 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { serveStatic, log } from "./vite"; // Removed setupVite (dev only)
+import { registerRoutes } from "./src/routes";
+import { serveStatic, log } from "./src/vite"; // Removed setupVite (dev only)
 import dotenv from "dotenv";
 dotenv.config();
 
