@@ -7,7 +7,7 @@
   "dev": "tsx server/index.ts",
   "build": "npm run build:client && npm run build:server",
   "build:client": "vite build",
-"build:server": "esbuild server/index.ts --platform=node --bundle --format=esm --outdir=dist && mkdir -p dist/server && cp -r server/* dist/server/"},
+"build:server": "esbuild server/index.ts --platform=node --bundle --format=esm --outdir=dist --external:path --external:express --external:dotenv --external:cors && mkdir -p dist/server && cp -r server/* dist/server/"},
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@jridgewell/trace-mapping": "^0.3.25",
